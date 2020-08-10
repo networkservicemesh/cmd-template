@@ -13,21 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          repository: [networkservicemesh/cmd-nsmgr, cmd-forwarder-sriov, cmd-forwarder-vppagent, cmd-registry-proxy-dns, cmd-registry-memory, cmd-exclude-prefixes-k8s]
+          repository: [networkservicemesh/cmd-nsmgr, networkservicemesh/cmd-forwarder-sriov, networkservicemesh/cmd-forwarder-vppagent, networkservicemesh/cmd-registry-proxy-dns, networkservicemesh/cmd-registry-memory, networkservicemesh/cmd-exclude-prefixes-k8s]
           token: ${{ secrets.NSM_BOT_GITHUB_TOKEN }}
+          sha: ${{ GITHUB_SHA }}
       - uses: actions/setup-go@v1
         with:
           go-version: 1.13.4
-      - name: Update sdk locally
-        run: |
-          GOPROXY=direct go get -u github.com/networkservicemesh/sdk
-          go mod tidy
-          git diff
-      - name: Push update to sdk-vppagent
+      - name: Push update to ${repository}
         run: |
           git config --global user.email "nsmbot@networkservicmesh.io"
           git config --global user.name "NSMBot"
-          git add go.mod go.sum
-          git commit -s -m "Update go.mod and go.sum to latest version from networkservicemesh/sdk@master"
-          git checkout -b update/sdk-gomod
-          git push -f origin update/sdk-gomod
+          git remote add cmd_template https://github.com/networkservicemesh/cmd-template.git
+          git fetch cmd_template
+          git cherry-pick --no-commit ${sha}
+          git commit -s -m "Update files from networkservicemesh/cmd-template@master"
+          git checkout -b update/from-cmd-template
+          git push -f origin update/from-cmd-template
