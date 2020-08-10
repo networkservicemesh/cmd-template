@@ -1,2 +1,2 @@
 # cmd-template
-Is a template for the network service mesh applications
+Is a template repository for the network service mesh applications
