@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          repository: [networkservicemesh/cmd-nsmgr, networkservicemesh/cmd-forwarder-sriov, networkservicemesh/cmd-forwarder-vppagent, networkservicemesh/cmd-registry-proxy-dns, networkservicemesh/cmd-registry-memory, networkservicemesh/cmd-exclude-prefixes-k8s]
+          repository: [networkservicemesh/cmd-registry-proxy-dns]
           token: ${{ secrets.NSM_BOT_GITHUB_TOKEN }}
           sha: ${{ GITHUB_SHA }}
       - uses: actions/setup-go@v1

@@ -175,7 +175,7 @@ most Network Service Mesh cmds will require:
 
 1. Go - to build
 2. Spire - needed to test
-3. Dlv - neede to debug
+3. Dlv - needed to debug
    
    and then
 4. Build
