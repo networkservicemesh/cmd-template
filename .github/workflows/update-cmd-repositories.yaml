@@ -52,7 +52,7 @@ jobs:
           git config --global user.name "NSMBot"
           git remote add cmd_template https://github.com/networkservicemesh/cmd-template.git
           git fetch cmd_template
-          git cherry-pick --no-commit ${GITHUB_SHA}
+          git cherry-pick --no-commit ${GITHUB_SHA} -m 1
           git commit -s -F /tmp/commit-message
           git checkout -b update/${{ github.repository }}
           git push -f origin update/${{ github.repository }}
