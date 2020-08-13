@@ -190,9 +190,6 @@ jobs:
         run: |
           git remote -v
           git fetch --depth=1 origin master
-      - name: Only allow go.mod and go.sum changes
-        run: |
-          find . -type f ! -name 'go.mod' ! -name 'go.sum' -exec git diff --exit-code origin/master -- {} +
       - name: Automerge nsmbot PR
         uses: ridedott/merge-me-action@master
         with:
