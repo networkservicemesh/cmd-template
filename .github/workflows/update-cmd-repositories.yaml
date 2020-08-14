@@ -12,7 +12,7 @@ jobs:
         repository: [cmd-registry-proxy-dns, cmd-nsc]
     name: Update ${{ matrix.repository }}
     runs-on: ubuntu-latest
-    if: github.repository != 'networkservicemesh/cmd-template'
+    if: github.repository == 'networkservicemesh/cmd-template'
     steps:
       - name: Checkout ${{ github.repository }}
         uses: actions/checkout@v2
