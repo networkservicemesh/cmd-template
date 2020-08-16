@@ -54,6 +54,12 @@ jobs:
           git remote add cmd_template https://github.com/networkservicemesh/cmd-template.git
           git fetch cmd_template
           git diff cmd_template/master -R | git apply
+          git add -- .*.yaml
+          git add -- .*.yml
+          git add -- .*.md
+          git add -- .*.conf
+          git add -- .*.txt
+          git reset -- $(cat exclude.patch.conf)
           git commit -s -F /tmp/commit-message
           git checkout -b update/${{ github.repository }}
           git push -f origin update/${{ github.repository }}
