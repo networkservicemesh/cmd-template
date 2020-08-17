@@ -6,7 +6,7 @@ on:
       - master
 jobs:
   pushImage:
-    name: push image
+    name: Push docker image
     runs-on: ubuntu-latest
     env:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
