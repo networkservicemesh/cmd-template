@@ -56,7 +56,9 @@ jobs:
           git diff cmd_template/master -R | git apply
           git add $(git ls-tree --name-only -r cmd_template/master | grep ".*\.yml\|.*\.yaml\|.*\.md\|.*\.txt\|.*.\.conf")
           git restore --staged -- $(cat exclude.patch.conf)
+          git restore -- $(cat exclude.patch.conf)
           git restore --staged -- exclude.patch.conf
+          git restore -- exclude.patch.conf
           if ! [ -n "$(git diff --cached --exit-code)" ]; then
             exit 0;
           fi
