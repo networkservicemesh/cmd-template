@@ -28,3 +28,5 @@ jobs:
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
           docker push "${ORG}/${NAME}:${TAG}"
           docker image rm "${ORG}/${NAME}:${TAG}"
+          docker push "${ORG}/${NAME}:latest"
+          docker image rm "${ORG}/${NAME}:latest"
