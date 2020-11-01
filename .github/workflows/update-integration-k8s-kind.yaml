@@ -11,12 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository != 'networkservicemesh/cmd-template'
     steps:
-      - name: Checkout integration-k8s-kind
+      - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          path: ${{ github.repository }}
-          repository: ${{ github.repository }}
-          token: ${{ secrets.NSM_BOT_GITHUB_TOKEN }}
       - name: Find merged PR
         uses: jwalton/gh-find-current-pr@v1
         id: findPr
@@ -42,11 +38,15 @@ jobs:
       - uses: actions/setup-go@v1
         with:
           go-version: 1.13.4
+      - uses: benjlevesque/short-sha@v1.1
+        id: short-sha
+        with:
+          length: 8
       - name: Find and Replace version
         uses: jacobtomlinson/gha-find-replace@master
         with:
           find: "${{ github.event.repository.name }}:.*\n"
-          replace: "${{ github.event.repository.name }}:${GITHUB_SHA::8}"
+          replace: "${{ github.event.repository.name }}:${{ steps.short-sha.outputs.sha }}\n"
       - name: Push update to the integration-k8s-kind
         working-directory: networkservicemesh/integration-k8s-kind
         run: |
@@ -67,4 +67,7 @@ jobs:
           git config --global user.name "NSMBot"
           git commit -s -F /tmp/commit-message
           git checkout -b update/"${branchName}"
-          git push -f origin update/"${branchName}"
+          while [ git push -f origin update/"${branchName}" ]; do
+            git fetch origin update/"${branchName}"
+            git rebase origin/update/"${branchName}"
+          done
