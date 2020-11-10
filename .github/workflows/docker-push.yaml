@@ -23,7 +23,7 @@ jobs:
       - name: Build ${NAME} image
         run: |
           docker build . -t "${ORG}/${NAME}:${GITHUB_SHA::8}" --target runtime
-          docker build . -t "${ORG}/${NAME}:master" --target runtime
+          docker build . -t "${ORG}/${NAME}:latest" --target runtime
       - name: Push ${NAME} image
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
