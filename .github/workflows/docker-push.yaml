@@ -23,11 +23,11 @@ jobs:
       - name: Build ${NAME} image
         run: |
           docker build . -t "${ORG}/${NAME}:${GITHUB_SHA::8}" --target runtime
-          docker build . -t "${ORG}/${NAME}:latest" --target runtime
+          docker build . -t "${ORG}/${NAME}" --target runtime
       - name: Push ${NAME} image
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
           docker push "${ORG}/${NAME}:${GITHUB_SHA::8}"
           docker image rm "${ORG}/${NAME}:${GITHUB_SHA::8}"
-          docker push "${ORG}/${NAME}:latest"
-          docker image rm "${ORG}/${NAME}:latest"
+          docker push "${ORG}/${NAME}"
+          docker image rm "${ORG}/${NAME}"
