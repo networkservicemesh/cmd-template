@@ -223,6 +223,7 @@ jobs:
           repository: ${{ github.repository }}
           token: ${{ secrets.NSM_BOT_GITHUB_TOKEN }}
       - name: Create branch name
+        working-directory: ${{ github.repository }}
         run: |
           diff=$(git diff --name-only)
           BRANCH_NAME="${{ github.event.repository.name }}"
