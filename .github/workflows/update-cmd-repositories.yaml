@@ -12,12 +12,12 @@ jobs:
     outputs:
       repositories: ${{ steps.organization-repositories.outputs.repositories }}
     steps:
-    - name: Run `get-organization-repositories`
-      id: organization-repositories
-      uses: actions/get-organization-repositories@v1
-      with:
-        github-organization: 'networkservicemesh'
-        regex: 'cmd-.*'
+      - name: Run `get-organization-repositories`
+        id: organization-repositories
+        uses: actions/get-organization-repositories@v1
+        with:
+          github-organization: 'networkservicemesh'
+          regex: 'cmd-.*'
   update-dependent-repositories:
     strategy:
       matrix:
