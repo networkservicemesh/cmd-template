@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Run `get-organization-repositories`
         id: organization-repositories
-        uses: actions/get-organization-repositories@v1
+        uses: denis-tingajkin/get-organization-repositories@v1
         with:
           github-organization: 'networkservicemesh'
           regex: 'cmd-.*'
@@ -35,7 +35,7 @@ jobs:
           token: ${{ secrets.NSM_BOT_GITHUB_TOKEN }}
       - name: Sync config files
         if: matrix.repository != 'networkservicemesh/cmd-template'
-        uses: actions/sync-files@v1
+        uses: denis-tingajkin/sync-files@v1
         with:
           git-author-email: 'nsmbot@networkservicmesh.io'
           git-author-name: 'NSMBot'
