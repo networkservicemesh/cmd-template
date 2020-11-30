@@ -56,7 +56,4 @@ jobs:
           git config --global user.name "NSMBot"
           git commit -s -F /tmp/commit-message
           git checkout -b update/${{ github.repository }}
-          while [ $(git push origin update/${{ github.repository }}) ]; do
-            git fetch origin update/${{ github.repository }}
-            git rebase origin/update/${{ github.repository }}
-          done
+          git push -f origin update/${{ github.repository }}
