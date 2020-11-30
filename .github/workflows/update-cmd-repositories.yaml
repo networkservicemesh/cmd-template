@@ -6,75 +6,40 @@ on:
       - master
 
 jobs:
+  fetch-repositories:
+    name: Fetch organization repositories
+    runs-on: ubuntu-latest
+    outputs:
+      repositories: ${{ steps.organization-repositories.outputs.repositories }}
+    steps:
+      - name: Run `get-organization-repositories`
+        id: organization-repositories
+        uses: actions/get-organization-repositories@v1
+        with:
+          github-organization: 'networkservicemesh'
+          regex: 'cmd-.*'
   update-dependent-repositories:
     strategy:
       matrix:
-        repository:
-          - cmd-registry-proxy-dns
-          - cmd-nsc
-          - cmd-registry-memory
-          - cmd-nsmgr
-          - cmd-forwarder-vppagent
-          - cmd-exclude-prefixes-k8s
-          - cmd-forwarder-sriov
-          - cmd-nse-icmp-responder
+        repository: ${{ fromJSON(needs.fetch-repositories.outputs.repositories) }}
+    needs: fetch-repositories
     name: Update ${{ matrix.repository }}
     runs-on: ubuntu-latest
-    if: github.repository == 'networkservicemesh/cmd-template'
+    if: github.repository == 'networkservicemesh/cmd-template' && ${{ matrix.repository }} != 'networkservicemesh/cmd-template'
     steps:
-      - name: Checkout ${{ github.repository }}
+      - name: Checkout ${{ matrix.repository }}
         uses: actions/checkout@v2
         with:
-          path: ${{ github.repository }}
-          repository: ${{ github.repository }}
+          path: ${{ matrix.repository }}
+          repository: ${{ matrix.repository}}
           token: ${{ secrets.NSM_BOT_GITHUB_TOKEN }}
-      - name: Find merged PR
-        uses: jwalton/gh-find-current-pr@v1
-        id: findPr
+      - name: Sync config files
+        uses: actions/sync-files@v1
         with:
-          github-token: ${{ github.token }}
-      - name: Create commit message
-        working-directory: ${{ github.repository }}
-        run: |
-          echo "Update common CI files to latest version from ${{ github.repository }}@master ${{ github.repository }}#${{ steps.findPr.outputs.pr }}" >> /tmp/commit-message
-          echo "" >> /tmp/commit-message
-          echo "${{ github.repository }} PR link: https://github.com/${{ github.repository }}/pull/${{ steps.findPr.outputs.pr }}" >> /tmp/commit-message
-          echo "" >> /tmp/commit-message
-          echo "${{ github.repository }} commit message:" >> /tmp/commit-message
-          git log -1 >> /tmp/commit-message
-          echo "Commit Message:"
-          cat /tmp/commit-message
-      - name: Checkout networkservicemesh/${{ matrix.repository }}
-        uses: actions/checkout@v2
-        with:
-          path: networkservicemesh/${{ matrix.repository }}
-          repository: networkservicemesh/${{ matrix.repository }}
-          token: ${{ secrets.NSM_BOT_GITHUB_TOKEN }}
-      - uses: actions/setup-go@v1
-        with:
-          go-version: 1.15
-      - name: Push update to the ${{ matrix.repository }}
-        working-directory: networkservicemesh/${{ matrix.repository }}
-        run: |
-          echo Starting to update repositotry ${{ matrix.repository }}
-          git config --global user.email "nsmbot@networkservicmesh.io"
-          git config --global user.name "NSMBot"
-          git remote add cmd_template https://github.com/networkservicemesh/cmd-template.git
-          git fetch cmd_template
-          if [ ! -f .templateignore ]; then
-            touch .templateignore
-            git add .templateignore
-          fi
-          git diff cmd_template/master -R | git apply
-          git add $(git ls-tree --name-only -r cmd_template/master | grep ".*\.yml\|.*\.yaml\|.*\.md\|.*\.txt\|.*.\.conf")
-          git restore -- .templateignore
-          while read -r line || [[ -n "$line" ]]; do
-            git restore --staged -- $line
-            git restore -- $line
-          done < .templateignore
-          if ! [ -n "$(git diff --cached --exit-code)" ]; then
-            exit 0;
-          fi
-          git commit -s -F /tmp/commit-message
-          git checkout -b update/${{ github.repository }}
-          git push -f origin update/${{ github.repository }}
+          git-author-email: 'nsmbot@networkservicmesh.io'
+          git-author-name: 'NSMBot'
+          src-branch-name: master
+          src-repository: $ {{ github.repository }}
+          allow-files-pattern: (.*\.yaml|.*\.yml|.*\.txt|.*\.md|.*\.conf)
+          exclude-files: |
+            .github/workflows/update-cmd-repositories.yaml
