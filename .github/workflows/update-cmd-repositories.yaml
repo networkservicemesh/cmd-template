@@ -25,7 +25,7 @@ jobs:
     needs: fetch-repositories
     name: Update ${{ matrix.repository }}
     runs-on: ubuntu-latest
-    if: github.repository == 'networkservicemesh/cmd-template' && ${{ matrix.repository }} != 'networkservicemesh/cmd-template'
+    if: github.repository == 'networkservicemesh/cmd-template' && matrix.repository != 'networkservicemesh/cmd-template'
     steps:
       - name: Checkout ${{ matrix.repository }}
         uses: actions/checkout@v2
