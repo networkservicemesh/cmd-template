@@ -35,7 +35,7 @@ jobs:
           token: ${{ secrets.NSM_BOT_GITHUB_TOKEN }}
       - name: Sync config files
         if: matrix.repository != 'networkservicemesh/cmd-template'
-        uses: denis-tingajkin/sync-files@v1.0.1
+        uses: denis-tingajkin/sync-files@v1.0.2
         with:
           git-author-email: 'nsmbot@networkservicmesh.io'
           git-author-name: 'NSMBot'
