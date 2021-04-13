@@ -47,3 +47,4 @@ jobs:
           allow-files-pattern: (.*\.yaml|.*\.yml|.*\.txt|.*\.md|.*\.conf)
           exclude-files: |
             .github/workflows/update-cmd-repositories.yaml
+            .golangci.yml
