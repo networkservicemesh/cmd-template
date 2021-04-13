@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - main
 jobs:
   pushImage:
     name: Push docker image
