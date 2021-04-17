@@ -3,7 +3,7 @@ name: Update dependent repositories
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   fetch-repositories:
@@ -39,7 +39,7 @@ jobs:
         with:
           git-author-email: 'nsmbot@networkservicmesh.io'
           git-author-name: 'NSMBot'
-          sync-branch-name: master
+          sync-branch-name: main
           sync-repository: ${{ github.repository }}
           sync-ignore-file-name: .templateignore
           result-branch-name: update/${{ github.repository }}
