@@ -3,17 +3,8 @@ name: Release deployments-k8s repository
 on:
   push:
     branches:
-      - "my-release/**"
+      - "release/**"
 jobs:
-  print_context:
-    name: Print event context
-    runs-on: ubuntu-latest
-    steps:
-      - env:
-          EVENT_CONTEXT: ${{ toJSON(github.event) }}
-        run: |
-          echo $EVENT_CONTEXT
-
   check-branch:
     name: Check release branch in deployments-k8s
     runs-on: ubuntu-latest
@@ -21,21 +12,21 @@ jobs:
       - name: Get tag
         run: |
           branch=${{ github.event.ref }}
-          echo '::set-output name=tag::'${branch#refs/heads/my-release/}
+          echo '::set-output name=tag::'${branch#refs/heads/release/}
         id: get-tag-step
 
-      - name: Checkout NikitaSkrynnik/deployments-k8s
+      - name: Checkout networkservicemesh/deployments-k8s
         uses: actions/checkout@v2
         with:
-          path: NikitaSkrynnik/deployments-k8s
-          repository: NikitaSkrynnik/deployments-k8s
-          token: ${{ secrets.MY_TOKEN }}
+          path: networkservicemesh/deployments-k8s
+          repository: networkservicemesh/deployments-k8s
+          token: ${{ secrets.NSM_BOT_GITHUB_TOKEN }}
 
-      - name: check-deployments-branch
-        working-directory: NikitaSkrynnik/deployments-k8s
+      - name: check-release-branch
+        working-directory: networkservicemesh/deployments-k8s
         run: |
-          echo Starting to check my-release branch in deployments-k8s repository
-          branch=my-release/${{ steps.get-tag-step.outputs.tag }}
+          echo Starting to check release branch in deployments-k8s repository
+          branch=release/${{ steps.get-tag-step.outputs.tag }}
           echo branch to be checked - ${branch}
 
           if ! [ -z "$(git ls-remote --heads origin ${branch})" ]; then
@@ -46,10 +37,10 @@ jobs:
           echo Branch ${branch} is not presented in repository
           echo Starting to create ${branch} branch in deployments-k8s repository
 
-          git config --global user.email "nikita.skrynnik@xored.com"
-          git config --global user.name "NikitaSkrynnik"
+          git config --global user.email "nsmbot@networkservicmesh.io"
+          git config --global user.name "NSMBot"
           git checkout -b ${branch}
-          git push -u origin ${branch}
+          git push -u origin ${branch} || exit 0;
 
   update-deployments-k8s:
     needs: check-branch
@@ -60,7 +51,7 @@ jobs:
       - name: Get tag
         run: |
           branch=${{ github.event.ref }}
-          echo '::set-output name=tag::'${branch#refs/heads/my-release/}
+          echo '::set-output name=tag::'${branch#refs/heads/release/}
         id: get-tag-step
 
       - name: Checkout ${{ github.repository }}
@@ -72,16 +63,17 @@ jobs:
       - name: Create commit message
         working-directory: ${{ github.repository }}
         run: |
-          echo "Hello commit" >> /tmp/commit-message
+          echo "Update docker images to the latest tag ${{ steps.get-tag-step.outputs.tag }}" >> /tmp/commit-message
+          echo "" >> /tmp/commit-message
           echo "Commit Message:"
           cat /tmp/commit-message
 
-      - name: Checkout NikitaSkrynnik/deployments-k8s
+      - name: Checkout networkservicemesh/deployments-k8s
         uses: actions/checkout@v2
         with:
-          path: NikitaSkrynnik/deployments-k8s
-          repository: NikitaSkrynnik/deployments-k8s
-          token: ${{ secrets.MY_TOKEN }}
+          path: networkservicemesh/deployments-k8s
+          repository: networkservicemesh/deployments-k8s
+          token: ${{ secrets.NSM_BOT_GITHUB_TOKEN }}
 
       - name: Find and Replace ci/${{ github.repository }} version
         uses: jacobtomlinson/gha-find-replace@master
@@ -90,7 +82,7 @@ jobs:
           replace: "${{ github.event.repository.name }}:${{ steps.get-tag-step.outputs.tag }}\n"
 
       - name: Push update to the deployments-k8s
-        working-directory: NikitaSkrynnik/deployments-k8s
+        working-directory: networkservicemesh/deployments-k8s
         run: |
           echo Starting to update repositotry deployments-k8s
           git add -- .
@@ -99,10 +91,9 @@ jobs:
             exit 0;
           fi
 
-          branch=my-release/${{ github.repository }}/${{ steps.get-tag-step.outputs.tag }}
-
-          git config --global user.email "nikita.skrynnik@xored.com"
-          git config --global user.name "NikitaSkrynnik"
+          branch=release/${{ github.repository }}/${{ steps.get-tag-step.outputs.tag }}
+          git config --global user.email "nsmbot@networkservicmesh.io"
+          git config --global user.name "NSMBot"
           git commit -s -F /tmp/commit-message
           git checkout -b ${branch}
           git push -f origin ${branch}
