@@ -103,6 +103,6 @@ jobs:
 
           git config --global user.email "nikita.skrynnik@xored.com"
           git config --global user.name "NikitaSkrynnik"
-          git commit -s -F /tmp/commit-message        
+          git commit -s -F /tmp/commit-message
           git checkout -b ${branch}
           git push -f origin ${branch}
