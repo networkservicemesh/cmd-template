@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "release/**"
+
 jobs:
   check-branch:
     name: Check release branch in deployments-k8s
