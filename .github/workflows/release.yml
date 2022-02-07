@@ -24,8 +24,8 @@ jobs:
 
       - name: Check go.mod deps
         run: |
-          cat go.mod | 
-          grep 'github.com/networkservicemesh/.* v' | 
+          cat go.mod |
+          grep 'github.com/networkservicemesh/.* v' |
           grep -v 'github.com/networkservicemesh/.* ${{ steps.get-tag-step.outputs.tag }}' || exit 0;
 
           exit 1;
