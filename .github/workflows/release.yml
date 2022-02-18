@@ -132,12 +132,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.repository != 'networkservicemesh/cmd-template' }}
     steps:
-      - name: Get tag
-        run: |
-          branch=${{ github.event.ref }}
-          echo '::set-output name=tag::'${branch#refs/heads/release/}
-        id: get-tag-step
-
       - name: Checkout ${{ github.repository }}
         uses: actions/checkout@v2
         with:
