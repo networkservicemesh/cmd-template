@@ -97,7 +97,7 @@ jobs:
           git config --global user.email "nsmbot@networkservicmesh.io"
           git config --global user.name "NSMBot"
           git config pull.rebase false
-          git pull -q origin main -s ort -X theirs
+          git pull -q origin main -s ort -X ours
       - name: Setup Go
         uses: actions/setup-go@v1
         with:
