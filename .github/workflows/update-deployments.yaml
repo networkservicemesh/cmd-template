@@ -1,5 +1,5 @@
 ---
-name: Update deployments-k8s reposiotry
+name: Update deployments-k8s repository
 on:
   push:
     branches:
