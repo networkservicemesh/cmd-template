@@ -170,3 +170,4 @@ issues:
     - path: 'main.go'
       linters:
         - revive
+      text: 'package-comments: should have a package comment'
