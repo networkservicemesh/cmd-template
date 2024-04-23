@@ -45,7 +45,7 @@ jobs:
 
   update-deployments-k8s:
     name: Update deployments-k8s
-    needs: [get-tag, check-branch]
+    needs: [get-tag, create-release]
     if: ${{ github.repository != 'networkservicemesh/cmd-template' }}
     uses: networkservicemesh/.github/.github/workflows/release-deployments.yaml@main
     with:
